@@ -2,6 +2,7 @@
 require_once('utils.php');
 $data = json_decode(file_get_contents("php://input"),true) ; //Variabili passati tramite POST
 $url = $data['link']; //INDIRIZZO DA LEGGERE
+if(strtolower(substr($url, 0, 3)) == "www") $url = "http://".$url;
 $mURL = getURL($url); //INDIRIZZO senza nome
 $doc = new DOMDocument();
 libxml_use_internal_errors(true);

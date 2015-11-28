@@ -7,7 +7,7 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 	<meta name="viewport" content="width=device-width; initial-scale=1.0">
 	<title>Raschietto</title>
-	<link rel="stylesheet" type="text/css" href="css/normalize.css" /><link rel="stylesheet" type="text/css" href="css/demo.css" /><link rel="stylesheet" type="text/css" href="css/component.css" /><link rel="stylesheet" type="text/css" href="css/login.css" /><link rel="stylesheet" href="css/jquery.mCustomScrollbar.css" /><link href="css/bootstrap.css" rel="stylesheet"><link rel="stylesheet" href="css/jquery-ui.css"><link href="css/flat-ui.min.css" rel="stylesheet"><link rel="stylesheet" href="css/style.css">
+	<link rel="stylesheet" type="text/css" href="css/normalize.css" /><link href='https://fonts.googleapis.com/css?family=Roboto:300,500' rel='stylesheet' type='text/css'><link rel="stylesheet" type="text/css" href="css/demo.css" /><link rel="stylesheet" type="text/css" href="css/component.css" /><link rel="stylesheet" type="text/css" href="css/login.css" /><link rel="stylesheet" href="css/jquery.mCustomScrollbar.css" /><link href="css/bootstrap.css" rel="stylesheet"><link rel="stylesheet" href="css/jquery-ui.css"><link href="css/flat-ui.min.css" rel="stylesheet"><link rel="stylesheet" href="css/style.css">
 	<!-- NOTE: The styles were added inline because Prefixfree needs access to your styles and they must be inlined if they are on local disk! -->
 	<script src="js/prefixfree.min.js"></script>
 	<script src="js/modernizr.custom.js"></script>
@@ -27,7 +27,6 @@
 		<?php include('menu.php');?>
 		<?php include('ann-menu.php');?>
 		<div class="content">
-
 			<div id="tabs" class="row">
 				<div class="content2 col-md-offset-4 col-md-8">
 					<?php include('home.php');?>
@@ -206,7 +205,7 @@ $(document).on('touchstart click', '#login-open', function(event){
 				self.DisableCheckBox();
 				self.WriteData(str);
 			}});
-			
+
 			var process2 = new API();
 			process2.chiamaServizio({requestUrl: 'pages/pageScrapper.php', data: myData, isAsync: true, loader: false, callback: function(str){
 				readRDF.GetMenu();
@@ -236,7 +235,7 @@ $(document).on('touchstart click', '#login-open', function(event){
 			api.chiamaServizio({requestUrl: 'loader.php', isAsync: true, callback: function(str){
 				$('.check-boxs').parent().append("<div class='modal' style='display:block' id='removeMePlease'>"+str+"</div>");
 			}});
-			
+
 		}
 		self.EnableCheckBox = function(){
 			$('#removeMePlease').remove();

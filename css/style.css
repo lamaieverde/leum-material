@@ -17,35 +17,6 @@
 	float:left;
 	margin:0 17px 0 0;
 }
-
-.checkbox-grid-left input[type="checkbox"]{
-	display:none;
-}
-.checkbox-grid-left input[type="checkbox"]+label{
-	display:inline-block;
-}
-.checkbox-grid-left p{
-	display:block;
-}
-.checkbox-grid-left a{
-	vertical-align: super;
-	margin-left: 10px;
-	color: #222;
-	font-size: 1em;
-}
-input[type=checkbox].css-checkbox1 + label.css-label1 {
-  height: 30px;
-  width: 30px;
-  display: inline-block;
-  line-height: 18px;
-  background-repeat: no-repeat;
-  background-position: 0 -37px;
-  cursor: pointer;
-  background: url(../img/img_sprite.png) no-repeat -14px -78px;
-}
-input[type=checkbox].css-checkbox1:checked + label.css-label1 {
-  background: url(../img/img_sprite.png) no-repeat -47px -78px;
-}
 .latest_tweets h3, .compose_twit h3 {
   font-size: 1.2em;
 }
@@ -75,11 +46,11 @@ input[type=checkbox].css-checkbox1:checked + label.css-label1 {
   left:0;
   right:0;
   margin-left:auto;
-  margin-right:auto;  
+  margin-right:auto;
 }
 #show-comm, #show-cites {
     max-width: 80%;
-  }  
+  }
 .commnet-desc {
   background-color: #FFF;
   width: 100%;
@@ -113,7 +84,7 @@ input[type=checkbox].css-checkbox1:checked + label.css-label1 {
   font-size:20px;
   color:#414445;
   font-weight:600;
-  display:inline-block; 
+  display:inline-block;
   margin-left: 20px;
 }
 .commnet-desc span.time{
@@ -242,7 +213,7 @@ input[type=checkbox].css-checkbox1:checked + label.css-label1 {
   color:#FFF;
   font-weight:600;
   background:#f34141;
-  padding: 12px 12px 12px 0px; 
+  padding: 12px 12px 12px 0px;
   border:1px solid #D01818;
   border-radius:3px;
   -webkit-border-radius:3px;
@@ -255,7 +226,7 @@ input[type=checkbox].css-checkbox1:checked + label.css-label1 {
 }
 a.tootlip2 {
   background:#46B9E1;
-  border:1px solid #46B9E1 !important; 
+  border:1px solid #46B9E1 !important;
 }
 .tootlip a:hover{
   background-color: #E52626;
@@ -287,7 +258,7 @@ cursor: pointer;
 }
 .normal-input-white{
   background: #e1e4e9;
-  border: none;  
+  border: none;
   margin-bottom:1em;
 }
 .alert-input-white{
@@ -310,12 +281,12 @@ textarea {
     max-height: 18em;
 }
 /***************************
-*    HIGHLIGHTS             
-*                          
+*    HIGHLIGHTS
+*
 ***************************/
 
 .hasAuthor0, .hasAuthor1 {
-    background-color: #8DD3C7 !important;
+    background-color: #8DD3C7;
     font-family: "Helvetica Neue", helvetica, arial, sans-serif;
     color: #fff;
     overflow: hidden;
@@ -328,7 +299,7 @@ textarea {
     rgb(98,147,139) 5px 5px;*/
 }
 .hasPublicationYear0, .hasPublicationYear1 {
-    background-color: #BEBADA !important;
+    background-color: #BEBADA;
     font-family: "Helvetica Neue", helvetica, arial, sans-serif;
     color: #fff;
     overflow: hidden;
@@ -341,7 +312,7 @@ textarea {
     rgb(134,132,154) 5px 5px;*/
 }
 .hasTitle0, .hasTitle1 {
-    background-color: #80b1d3 !important;
+    background-color: #80b1d3;
     font-family: "Helvetica Neue", helvetica, arial, sans-serif;
     color: #fff;
     overflow: hidden;
@@ -354,7 +325,7 @@ textarea {
     rgb(89,124,147) 5px 5px;*/
 }
 .hasDOI0, .hasDOI1 {
-    background-color: #fdb462 !important;
+    background-color: #fdb462;
     font-family: "Helvetica Neue", helvetica, arial, sans-serif;
     color: #fff;
     overflow: hidden;
@@ -367,7 +338,7 @@ textarea {
     rgb(189,135,73) 5px 5px;*/
 }
 .hasURL0, .hasURL1 {
-    background-color: #fccde5 !important;
+    background-color: #fccde5;
     font-family: "Helvetica Neue", helvetica, arial, sans-serif;
     color: #86ABAF;
     overflow: hidden;
@@ -380,7 +351,7 @@ textarea {
     rgb(188,153,171) 5px 5px*/
 }
 .hasComment0,.hasComment1 {
-    background-color: #b3de69 !important;
+    background-color: #b3de69;
     font-family: "Helvetica Neue", helvetica, arial, sans-serif;
     color: #fff;
     overflow: hidden;
@@ -393,7 +364,7 @@ textarea {
     rgb(128,158,75) 5px 5px;*/
 }
 .cites0 {
-    background-color: #d73027 !important;
+    background-color: #d73027;
     font-family: "Helvetica Neue", helvetica, arial, sans-serif;
     color: #fff;
     overflow: hidden;
@@ -406,7 +377,7 @@ textarea {
     rgb(149,171,144) 5px 5px;*/
 }
 .hasIntro {
-    background-color: #ffed6f !important;
+    background-color: #ffed6f;
     font-family: "Helvetica Neue", helvetica, arial, sans-serif;
     color: #856FFF;
     overflow: hidden;
@@ -419,7 +390,7 @@ textarea {
     rgb(191,178,83) 5px 5px;*/
 }
 .hasConcept {
-    background-color: #fb8072 !important;
+    background-color: #fb8072;
     font-family: "Helvetica Neue", helvetica, arial, sans-serif;
     color: #fff;
     overflow: hidden;
@@ -432,7 +403,7 @@ textarea {
     rgb(187,95,85) 5px 5px;*/
 }
 .hasAbstr {
-    background-color: #ffffb3 !important;
+    background-color: #ffffb3;
     font-family: "Helvetica Neue", helvetica, arial, sans-serif;
     color: #D8B3FF;
     overflow: hidden;
@@ -445,7 +416,7 @@ textarea {
     rgb(191,191,134) 5px 5px;*/
 }
 .hasMateria {
-    background-color: #D9D9D9 !important;
+    background-color: #D9D9D9;
     font-family: "Helvetica Neue", helvetica, arial, sans-serif;
     color: #7E878C;
     overflow: hidden;
@@ -458,7 +429,7 @@ textarea {
     rgb(153,153,153) 5px 5px;*/
 }
 .hasMeth {
-    background-color: #bc80bd !important;
+    background-color: #bc80bd;
     font-family: "Helvetica Neue", helvetica, arial, sans-serif;
     color: #fff;
     overflow: hidden;
@@ -471,7 +442,7 @@ textarea {
     rgb(125,85,125) 5px 5px;*/
 }
 .hasRes {
-    background-color: #bf812d !important;
+    background-color: #bf812d;
     font-family: "Helvetica Neue", helvetica, arial, sans-serif;
     color: #fff;
     overflow: hidden;
@@ -484,7 +455,7 @@ textarea {
     rgb(126,86,30) 5px 5px;*/
 }
 .hasDisc {
-    background-color: #80cdc1 !important;
+    background-color: #80cdc1;
     font-family: "Helvetica Neue", helvetica, arial, sans-serif;
     color: #fff;
     overflow: hidden;
@@ -497,7 +468,7 @@ textarea {
     rgb(88,141,133) 5px 5px;*/
 }
 .hasConc {
-    background-color: #ccebc5 !important;
+    background-color: #ccebc5;
     font-family: "Helvetica Neue", helvetica, arial, sans-serif;
     color: #9E897D;
     overflow: hidden;
@@ -510,8 +481,8 @@ textarea {
     rgb(151,34,27) 5px 5px;*/
 }
 /***************************
-*    REGISTER             
-*                          
+*    REGISTER
+*
 ***************************/
 #register-button{
     position: absolute;
@@ -627,8 +598,8 @@ left: 1%;
   color: #8C001A;
 }
 /***************************
-*    HOME             
-*                          
+*    HOME
+*
 ***************************/
 #longLogo h1,h2,h3,h4{
   font-family: 'Lato', Arial, sans-serif;
@@ -664,8 +635,8 @@ left: 1%;
 }
 
 /***************************
-*    BACK TO TOP             
-*                          
+*    BACK TO TOP
+*
 ***************************/
 a.cd-top {
   color: #5F6F81;

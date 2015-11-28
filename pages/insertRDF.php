@@ -549,7 +549,7 @@ foreach($cities as $cite){
 }
 }
 
-function InsertJournals($content, $uri, $item, $ArtTitle){
+function InsertJournals($content, $uri, $item, $ArtTitle){ //rivista-statistica
 //Work = Nome Senza Estensione
 //Exp = Nome Con _ver1
 $Work = $item;
@@ -592,7 +592,8 @@ else{
 
 //URL
 $url = $xpath->query("//a[@id='div1_div2_div2_div3_div6_a1']")->item(0);
-if($url != null)
+CreateUrl($Exp, $item, Normalize($url->nodeValue), 0, strlen(Normalize($url->nodeValue)), $url->getAttribute('id'), $uri, "Questo testo rappresenta l' indirizzo:".$url->getAttribute('href'));
+$url = $xpath->query("//a[@id='div1_div2_div2_div3_p4_a1']")->item(0);
 CreateUrl($Exp, $item, Normalize($url->nodeValue), 0, strlen(Normalize($url->nodeValue)), $url->getAttribute('id'), $uri, "Questo testo rappresenta l' indirizzo:".$url->getAttribute('href'));
 
 
@@ -611,6 +612,7 @@ CreateDoi($Exp, $item, $doi, 0, strlen($doi), $target->getAttribute('id'), $uri)
 
 //Citazioni dell'articolo
 $cities=$xpath->query("//div[@id='div1_div2_div2_div3_div7_div1']/p");
+
 $i=1;
 foreach($cities as $cite){
 	$citExp=$Exp."_cited".$i;
@@ -633,12 +635,18 @@ foreach($cities as $cite){
 		$arrayautori = explode(",", $autori);
 		$start=0;
 		foreach($arrayautori as $node){  //PROVARE: per la posizione senza usare start cerca $node nella stringa totale e poi sottrai la pos - strlen $node
-			$var = trim($node); 
-			print($var);
-			print("|\n");
-			print($start + strlen($var));
-			CreateAuthors($citExp, $item, $var, $start, $start + strlen($var), $cite->getAttribute('id'), $uri);
-			$start += strlen($var) + 2;
+			$var = trim($node);
+			$len=strlen($var);
+			if(strpos($var,'Ö')>0||strpos($var,'É')>0||strpos($var,'Ú')>0){		//decremento di uno perchè la pos con questi caratteri risulta +1
+				$len=$len-1;
+			}
+			//$var=Normalize($var);
+			//print($var);
+			//print("|\n");
+			//print($start + strlen($var));
+			CreateAuthors($citExp, $item, $var, $start, $start + $len, $cite->getAttribute('id'), $uri);
+			$start += $len + 2;
+
 			}
 	}	
 	
@@ -698,6 +706,22 @@ CreateUrl($Exp, $item, Normalize($url->nodeValue), 0, strlen(Normalize($url->nod
 
 
 //Anno di pubblicazione dell'articolo
+
+$target=$xpath->query("//div[@id='div1_div2_div2_div3']")->item(0);
+//$ab = $xpath->query("//div[@id='div1_div2_div2_div3']//text()[(preceding::br[@id='div1_div2_div2_div3_br5'])] ")->item(0);
+//$abb= $xpath->query("//*[@id="div1_div2_div2_div3"]/text()[2]")->item(0);
+$str="";
+$str=$target->nodeValue;
+//$string=Normalize($str); //non normalizzare perchè in higlight poi li conta i caratteri e risultano di più li dato che qui li normalizzo
+//$string=trim($str);
+
+$stony="Carte de Tendre";
+//$stony="Copyright (c) 2015";
+$pos=strpos($str, $stony);
+//CreatePublicationYear($Exp, $item, 2015, $pos+strlen($stony)-4, $pos+strlen($stony), $target->getAttribute('id'), $uri); //MALEDETTOOOOOOOOOOOOOOOOOOO ci sono spazi a caso nel testo ed è sfasato ogni articolo diverso!!!
+CreatePublicationYear($Exp, $item, 2015, $pos, $pos+4, $target->getAttribute('id'), $uri);
+
+//Anno di pubblicazione dell'articolo
 /*
 $target=$xpath->query("//div[@id='div1_div2_div2_div3']")->item(0);
 $ab = $xpath->query("//div[@id='div1_div2_div2_div3']//text()[(preceding::br[@id='div1_div2_div2_div3_br5'])]")->item(0);
@@ -712,7 +736,6 @@ $target = $xpath->query("//a[@id='div1_div2_div2_div3_a1']")->item(0);
 $doi=$target->nodeValue;
 CreateDoi($Exp, $item, $doi, 0, strlen($doi), $target->getAttribute('id'), $uri);
 }
-
 
 
 function InsertJournalsAT($content, $uri, $item, $ArtTitle){
@@ -754,9 +777,9 @@ CreateRethoric($Exp, $item, "sro:Abstract", "Questo è l' astratto dell'articolo
 
 //URL
 $url = $xpath->query("//a[@id='div1_div2_div2_div3_div6_a1']")->item(0);
-if($url != null)
 CreateUrl($Exp, $item, Normalize($url->nodeValue), 0, strlen(Normalize($url->nodeValue)), $url->getAttribute('id'), $uri, "Questo testo rappresenta l' indirizzo:".$url->getAttribute('href'));
-
+$url = $xpath->query("//a[@id='div1_div2_div2_div3_p2_a1']")->item(0);
+CreateUrl($Exp, $item, Normalize($url->nodeValue), 0, strlen(Normalize($url->nodeValue)), $url->getAttribute('id'), $uri, "Questo testo rappresenta l' indirizzo:".$url->getAttribute('href'));
 
 
 //Anno di pubblicazione dell'articolo

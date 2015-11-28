@@ -111,14 +111,42 @@ var Scrap = (function(){
 						self.Highlight(content[i], self.CheckID(id));
 				}
 		}
-		else{
-			$("span." + self.CheckID(id)).contents().unwrap();
-			$("span." + self.CheckID(id)).remove();
-			$("span.gn-icon-show." + self.CheckID(id)).remove();
-			}
+		else
+		{
+			$("span." + self.CheckID(id)).each(function(){
+				if(this.classList.length == 3){
+					if(this.classList.contains("annotation") && this.classList.contains("annotation-overlap")){
+						$(this).contents().unwrap();
+					}
+				}
+				else
+				{
+					if(this.classList.length > 3){
+						$(this).removeClass(id);
+						if(this.classList.length == 3)
+							if(this.classList.contains("annotation") && this.classList.contains("annotation-overlap")){
+								$(this).removeClass("annotation-overlap");
+								$(this).removeAttr("style");
+							}
+					}
+					else{
+						$(this).contents().unwrap();
+					}
+				}
+				$("span.gn-icon-show." + self.CheckID(id)).remove();
+			});
+			//$("span." + self.CheckID(id)).remove();
+			//$("span.gn-icon-show." + self.CheckID(id)).remove();
+		}
 	}
-	self.Highlight = function(elements, style){
-		function guid() {
+	self.Highlight = function(annotation, style){
+	  var target_xpath = '//*[@id="' + annotation.id.value + '"]';//Prendi l'elemento
+	  var target_node =$(document.evaluate(target_xpath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue);
+	  var ann_start = annotation.start.value;
+	  var ann_end = annotation.end.value;
+
+	  var count = 0;
+	  function uniqueID() {
 		  function s4() {
 			return Math.floor((1 + Math.random()) * 0x10000)
 			  .toString(16)
@@ -127,87 +155,125 @@ var Scrap = (function(){
 		  return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
 			s4() + '-' + s4() + s4() + s4();
 		}
-		var id = self.GetPrefixID(elements.subject.value, elements.id.value);
+	  var guid = uniqueID();
+	  var span = $(document.createElement("span")).addClass(style).addClass('gn-icon-show').attr("name", guid);
+	  span.attr("data-info", JSON.stringify(annotation));
+	  span.attr("onclick", "Scrap.OnClick(this, '"+ style +"'); return false;");
+	  wrap_node(target_node);
+	  
+	  function wrap_node(node) {
+		$(node).contents().each(function() {
+		  // Text node
+		  if (this.nodeType == 3) {
+			var text = $(this).text();
 
-
-		var element = $("#" + id);
-		if(element.html() == undefined) element = $("#" + id + "1");
-		var html = element.html();
-		var text = element.text();
-		if(html == undefined || text == "") return;
-		var before, after;
-		var origin = text.substring(elements.start.value, elements.end.value);
-		var guid = guid();
-		var span = $(document.createElement("span")).addClass(style).addClass('gn-icon-show').attr("name", guid);
-		span.attr("data-info", JSON.stringify(elements));
-		span.attr("onclick", "Scrap.OnClick(this, '"+ style +"'); return false;");
-		//se non ci sono tag figli in mezzo, semplice.
-		var start = html.lastIndexOf(htmlEntities(origin));
-		var end = start + htmlEntities(origin).length;
-		var startSpan = "<span name='"+guid+"' class='" + style + "'>";
-		if(start != -1){
-			before = html.substring(0, start);
-			after = html.substring(end);
-			origin = html.substring(start, end);
-			origin = startSpan + origin + "</span>";
-			element.html(before + span[0].outerHTML + origin + after);
+			// Se l'annotazione è finita passa al nodo successivo
+			if (count >= ann_end)
 			return;
-		}
-		var index = 0;
-		var trovato = false;
-		var stop = false;
-		document.getElementById($(element)[0].id).normalize();
-		Recursive(element);
 
-		function WRAP(el, first){
-			el.contents().each(function(){
-				if($(this).nodeType === 8) return;
-				else
-					if($(this)[0].nodeType === 1) ASD($(this, first));
-					else {
-						first = false;
-						$(this).wrap(startSpan + "</span>");
-					}
-			});
-		}
+			// Se l'annotazione non inizia in questo nodo (o non è già iniziata)
+			// incrementa il counter e passa al nodo successivo
+			if ((count + text.length) <= ann_start) {
+			  count += text.length;
+			  return;
+			}
 
-		function Recursive(el){
-			el.contents().each(function(){
-				if($(this)[0].nodeType === 8) return;
-				if($(this)[0].nodeType === 1) {return Recursive($(this));}
-				if(stop) return false;
-				index += $(this).text().length;
-				if(index == elements.end.value) stop = true;
-				if(index >= elements.start.value && index <= elements.end.value) { //se troviamo il primo nodo
-					if(!trovato){
-						var last = index - elements.start.value;
-						start = $(this).text().length - last;
-						before = $(this).text().substr(0, start);
-						origin = $(this).text().substr(start);
-						if(origin.trim() != "")
-						{
-							$($(this)[0]).replaceWith(before + span[0].outerHTML + startSpan + origin + "</span>");
-							trovato = true;
-						}
-					}
-					else
-						$(this).wrap(startSpan + "</span>"); //se tutto il nodo in mezzo � il nostro testo
-				}
-				else
-				{
-					if(index > elements.end.value){
-						end = index - elements.end.value;
-						end = $(this).text().length - end - 4;
-						after = $(this).text().substr(end);
-						origin = $(this).text().substr(0, end);
-						$($(this)[0]).replaceWith(startSpan + origin + "</span>" + after);
-						stop = true;
-					}
-				}
-			});
-		}
-		var ciao = "";
-		self.RemoveBlankSpan(guid);
+			var start_wrap = 0;
+			var end_wrap = -1;
+
+			// Se l'annotazione inizia in questo nodo
+			if (count < ann_start)
+			start_wrap = ann_start-count;
+
+			// Se l'annotazione finisce in questo nodo
+			if ((count + text.length) > ann_end)
+			end_wrap = ann_end-count;
+
+			var parent = this.parentNode;
+			// Il parent è lo span di un'altra annotazione
+			if (parent.nodeType == 1 && parent.classList.contains('annotation')) {
+			  var wrap_mid = $(parent);
+
+			  var ann_target = [];
+			  //for (var i = 0; i < $._data(parent, "events").click[0].data.length; ++i) {
+				//ann_target.push($._data(parent, "events").click[0].data[i]);
+			  //}
+
+			  if (start_wrap > 0) {
+				var wrap_left = $("<span>");
+				wrap_left.attr('class', $(parent).attr('class'));
+				wrap_left.attr('name', $(parent).attr('name'));
+				wrap_left.css('background', $(parent).css('background'));
+				//wrap_left.click(ann_target, function(event) {
+					//Scrap.OnClick(event.data, style, guid);
+				//});
+				wrap_left.text(text.slice(0,start_wrap));
+				wrap_mid.before(wrap_left);
+			  }
+
+			  if (end_wrap != -1) {
+				var wrap_right = $("<span>");
+				wrap_right.attr('class', $(parent).attr('class'));
+				wrap_left.attr('name', $(parent).attr('name'));
+				wrap_right.css('background', $(parent).css('background'));
+				//wrap_right.click(ann_target, function(event) {
+					//Scrap.OnClick(event.data, style, guid);
+				//});
+				wrap_right.text(text.slice(end_wrap));
+				wrap_mid.after(wrap_right);
+				wrap_mid.text(text.slice(start_wrap,end_wrap));
+			  }
+			  else {
+				wrap_mid.text(text.slice(start_wrap));
+			  }
+
+			  if (!wrap_mid.hasClass(style))
+			  wrap_mid.addClass(style);
+			  if (!wrap_mid.hasClass('annotation-overlap'))
+			  wrap_mid.addClass('annotation-overlap');
+
+			  var rgba_array = [];
+			  var gradient = '';
+			  for (i = 0; i < parent.classList.length; ++i) {
+				var color = self.getStyle(parent.classList[i]);
+				if (color != null)
+					rgba_array.push(color);
+			  }
+			  if(rgba_array.length > 0)
+				gradient = "to bottom, " + rgba_array[0] + " 0%, " + rgba_array[rgba_array.length-1] + " 100%";
+			
+			  wrap_mid.css('background', 'linear-gradient('+gradient+')');
+
+			  //$._data(parent, "events").click[0].data.push(annotation);
+			  wrap_mid.append(span.attr('style', 'background: none'));
+			}
+			else {
+			  var wrap_element = $("<span class='annotation "+style+"' name='"+guid+"'></span>");
+			  $(this).replaceWith(wrap_element);
+
+			  if (start_wrap > 0)
+			  wrap_element.before(text.slice(0,start_wrap));
+
+			  // L'annotazione finisce in questo nodo
+			  if (end_wrap > 0) {
+				wrap_element.text(text.slice(start_wrap,end_wrap));
+				wrap_element.after(text.slice(end_wrap));
+			  }
+			  else
+				wrap_element.text(text.slice(start_wrap));
+			  //wrap_element[0].outerHTML = span[0].outerHTML + wrap_element[0].outerHTML;
+			  //wrap_element.click([annotation], function(event) {
+				//Scrap.OnClick(event.data, style, guid);
+			  //});
+			  wrap_element.append(span);
+			}
+			count += text.length;
+		  }
+		  else {
+			wrap_node(this);
+		  }
+		});
+	  }
 	}
 	self.GetArray = function(from, what, control){
 		var array = [];
@@ -239,7 +305,8 @@ var Scrap = (function(){
 			else
 				return 1;
 	};
-	self.OnClick = function(arg, id){
+
+	self.OnClick = function(arg, id, idToRem){
 		$(arg).attr('id', 'OpenedSpan');
 		var el = $(arg).attr('data-info');
 		var idToRem = $(arg).attr('name');
@@ -399,8 +466,10 @@ var Scrap = (function(){
 		else
 		{
 			//cancello vecchio data-info
-			$("span#OpenedSpan").removeAttr('data-info');
-			$("span#OpenedSpan").attr('data-info', JSON.stringify(el));
+			//$("span#OpenedSpan").removeAttr('data-info');
+			//$("span#OpenedSpan").attr('data-info', JSON.stringify(el));
+			var span = $("span[name="+idToRemove+"]");
+			span.click([el], function(event){Scrap.OnClick(event.data, "", idToRemove)});
 		}
 	}
 	self.CheckAnnotation = function(from){
@@ -702,9 +771,28 @@ var Scrap = (function(){
 			}
 			sessionStorage.setItem("ann",arg + newvar)
 		}
-
 	}
-
+	
+	self.getStyle = function(style) {
+		switch(style){
+			case "hasAuthor0": case "hasAuthor1": return "rgba(141, 211, 199, 0.5)";
+			case "hasPublicationYear0": case "hasPublicationYear1": return "rgba(190, 186, 218, 0.5)";
+			case "hasTitle0": case "hasTitle1": return "rgba(128, 177, 211, 0.5)";
+			case "hasDOI0": case "hasDOI1": return "rgba(253, 180, 98, 0.5)";
+			case "hasURL0": case "hasURL1": return "rgba(252, 205, 229, 0.5)";
+			case "hasComment0": case "hasComment1": return "rgba(179,222,105, 0.5)";
+			case "cites0": return "rgba(215,48,39,0.5)";
+			case "hasIntro": return "rgba(255,237,111,0.5)";
+			case "hasConcept": return "rgba(251,128,114, 0.5)";
+			case "hasAbstr": return "rgba(255,255,179, 0.5)";
+			case "hasMateria": return "rgba(217,217,217, 0.5)";
+			case "hasMeth": return "rgba(117,147,173, 0.5)";
+			case "hasRes": return "rgba(191,129,45, 0.5)";
+			case "hasDisc": return "rgba(128,205,193, 0.5)";
+			case "hasConc": return "rgba(204,235,197, 0.5)";
+		}
+		return null;
+	}
 	return self;
 }());
 
